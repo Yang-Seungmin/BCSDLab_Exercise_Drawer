@@ -83,7 +83,7 @@ public class BFragment extends Fragment implements View.OnClickListener {
 
         editText = view.findViewById(R.id.edit_text_calc);
         editText.setTextIsSelectable(true);
-        editText.setShowSoftInputOnFocus(false);
+        //editText.setShowSoftInputOnFocus(false);
     }
 
     @Override
@@ -91,13 +91,15 @@ public class BFragment extends Fragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.button_backspace:
                 String expr = editText.getText().toString();
-                editText.setText(expr.substring(0, expr.length() - 1));
+                if (editText.getText().toString().length() > 0)
+                    editText.setText(expr.substring(0, expr.length() - 1));
                 break;
             case R.id.button_clear:
                 editText.setText("");
                 break;
             case R.id.button_equal:
-
+                Calculator calculator = new Calculator(editText.getText().toString());
+                editText.setText(calculator.calculate());
                 break;
             case R.id.button_opening_brace:
             case R.id.button_closing_brace:

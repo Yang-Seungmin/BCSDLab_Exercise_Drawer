@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 public class Calculator {
+    private static final String errorMessage = "잘못된 수식";
     String expr;
     ArrayList<String> arrayList;
 
@@ -13,16 +14,21 @@ public class Calculator {
         makeList();
         System.out.println(arrayList);
         arrayList = convertPostExpr();
+        System.out.println(arrayList);
     }
 
     public void makeList() {
         StringBuilder stringBuilder = new StringBuilder();
         char[] exprChar = expr.toCharArray();
+        char prev = ' ';
 
         for (char e : exprChar) {
             switch (e) {
-                case '+':
                 case '-':
+                    if(prev == '+' || prev == '-' || prev == '*' || prev == '/' || prev == '(' || prev == ' ') {
+                        arrayList.add("0");
+                    }
+                case '+':
                 case '*':
                 case '/':
                 case '(':
@@ -36,6 +42,7 @@ public class Calculator {
                     stringBuilder.append(e);
                     break;
             }
+            prev = e;
         }
 
         if (stringBuilder.length() > 0)
@@ -52,25 +59,37 @@ public class Calculator {
                 double b, a;
                 switch (s) {
                     case "+":
+                        if (stringStack.empty()) return errorMessage;
                         b = Double.parseDouble(stringStack.pop());
+
+                        if (stringStack.empty()) return errorMessage;
                         a = Double.parseDouble(stringStack.pop());
 
                         stringStack.push(String.valueOf(a + b));
                         break;
                     case "-":
+                        if (stringStack.empty()) return errorMessage;
                         b = Double.parseDouble(stringStack.pop());
+
+                        if (stringStack.empty()) return errorMessage;
                         a = Double.parseDouble(stringStack.pop());
 
                         stringStack.push(String.valueOf(a - b));
                         break;
                     case "*":
+                        if (stringStack.empty()) return errorMessage;
                         b = Double.parseDouble(stringStack.pop());
+
+                        if (stringStack.empty()) return errorMessage;
                         a = Double.parseDouble(stringStack.pop());
 
                         stringStack.push(String.valueOf(a * b));
                         break;
                     case "/":
+                        if (stringStack.empty()) return errorMessage;
                         b = Double.parseDouble(stringStack.pop());
+
+                        if (stringStack.empty()) return errorMessage;
                         a = Double.parseDouble(stringStack.pop());
 
                         stringStack.push(String.valueOf(a / b));
@@ -81,6 +100,13 @@ public class Calculator {
                 }
             }
 
+            while (stringStack.size() > 1) {
+                double b = Double.parseDouble(stringStack.pop());
+                double a = Double.parseDouble(stringStack.pop());
+                stringStack.push(String.valueOf(a * b));
+            }
+
+            if (stringStack.empty()) return errorMessage;
             return stringStack.pop();
         } else return "ERROR";
     }
