@@ -75,12 +75,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/layout_stopwatch">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:text="Records"
-            android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+            android:orientation="horizontal"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:text="Records"
+                android:layout_weight="1"
+                android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
+
+            <Button
+                android:layout_marginRight="16dp"
+                android:id="@+id/button_record"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Record" />
+
+        </LinearLayout>
 
         <ListView
             android:id="@+id/list_view_records"
