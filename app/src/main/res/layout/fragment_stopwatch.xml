@@ -82,8 +82,8 @@
             android:text="Records"
             android:textAppearance="@style/TextAppearance.AppCompat.Display1" />
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_view_records"
+        <ListView
+            android:id="@+id/list_view_records"
             android:layout_width="match_parent"
             android:layout_height="match_parent" />
     </LinearLayout>
