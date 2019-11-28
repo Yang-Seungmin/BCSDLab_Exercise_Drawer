@@ -10,9 +10,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
 
 
 /**
@@ -20,8 +24,11 @@ import android.widget.TextView;
  */
 public class StopwatchFragment extends Fragment implements View.OnClickListener {
 
+    private LinkedList<String> recordArrayList = new LinkedList<>();
+    private ArrayAdapter<String> arrayAdapter;
+
     private TextView textViewStopwatch;
-    private Button buttonStart, buttonStop, buttonPause;
+    private Button buttonStart, buttonStop, buttonPause, buttonRecord;
 
     private ListView listViewRecords;
 
@@ -42,6 +49,10 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
         buttonStart.setOnClickListener(this);
         buttonStop.setOnClickListener(this);
         buttonPause.setOnClickListener(this);
+        buttonRecord.setOnClickListener(this);
+
+        arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, recordArrayList);
+        listViewRecords.setAdapter(arrayAdapter);
         return view;
     }
 
@@ -50,6 +61,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
         buttonStart = view.findViewById(R.id.button_start);
         buttonStop = view.findViewById(R.id.button_stop);
         buttonPause = view.findViewById(R.id.button_pause);
+        buttonRecord = view.findViewById(R.id.button_record);
         listViewRecords = view.findViewById(R.id.list_view_records);
 
         stopwatchTask = new StopwatchTask();
@@ -66,13 +78,19 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
                     executed = true;
                 }
                 break;
+
             case R.id.button_stop:
                 isStopwatchRunning = false;
                 executed = false;
                 stopwatchTask.cancel(true);
                 break;
+
             case R.id.button_pause:
                 isStopwatchRunning = false;
+                break;
+
+            case R.id.button_record:
+                if(isStopwatchRunning && stopwatchTask != null) stopwatchTask.record();
                 break;
         }
     }
@@ -105,6 +123,11 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
             return null;
         }
 
+        public void record() {
+            recordArrayList.addFirst(String.format("%02d : %02d : %02d", m, s, ms));
+            arrayAdapter.notifyDataSetChanged();
+        }
+
         @Override
         protected void onProgressUpdate(Long... values) {
             super.onProgressUpdate(values);
@@ -120,6 +143,8 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
         protected void onCancelled() {
             super.onCancelled();
             textViewStopwatch.setText(String.format("%02d : %02d : %02d", 0, 0, 0));
+            recordArrayList.clear();
+            arrayAdapter.notifyDataSetChanged();
         }
     }
 
