@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/main_navigation"
+    app:startDestination="@id/nav_a">
+
+    <fragment
+        android:id="@+id/nav_a"
+        android:name="com.ysmstudio.bcsddrawer.AFragment"
+        android:label="Menu A" />
+
+    <fragment
+        android:id="@+id/nav_b"
+        android:name="com.ysmstudio.bcsddrawer.BFragment"
+        android:label="Menu B" />
+
+    <fragment
+        android:id="@+id/nav_stopwatch"
+        android:name="com.ysmstudio.bcsddrawer.StopwatchFragment"
+        android:label="Timer" />
+
+</navigation>
