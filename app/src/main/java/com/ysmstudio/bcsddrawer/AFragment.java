@@ -36,8 +36,8 @@ public class AFragment extends Fragment {
 
     @OnClick(R.id.button_add)
     void buttonOnClick() {
-        if(editText.getText().toString().length() > 0) {
-            if(adapter != null) {
+        if (editText.getText().toString().length() > 0) {
+            if (adapter != null) {
                 adapter.addArrayListItem(editText.getText().toString());
                 adapter.notifyDataSetChanged();
                 editText.setText("");
@@ -53,7 +53,7 @@ public class AFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_a, container, false);
-        unbinder = ButterKnife.bind(this,view);
+        unbinder = ButterKnife.bind(this, view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
