@@ -10,7 +10,7 @@
 
     <fragment
         android:id="@+id/nav_b"
-        android:name="com.ysmstudio.bcsddrawer.BFragment"
+        android:name="com.ysmstudio.bcsddrawer.calculator.BFragment"
         android:label="Menu B" />
 
     <fragment

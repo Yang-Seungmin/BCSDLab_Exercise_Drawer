@@ -1,33 +1,35 @@
-package com.ysmstudio.bcsddrawer;
+package com.ysmstudio.bcsddrawer.calculator;
 
 
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 
-import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
-import java.util.Stack;
+import com.ysmstudio.bcsddrawer.R;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import butterknife.OnLongClick;
 import butterknife.Unbinder;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class BFragment extends Fragment {
+public class BFragment extends Fragment implements CalculatorView{
 
     private Unbinder unbinder;
 
     @BindView(R.id.edit_text_calc) EditText editText;
+
+    private CalculatorPresenter calculatorPresenter;
 
     public BFragment() {
         // Required empty public constructor
@@ -40,6 +42,7 @@ public class BFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_b, container, false);
         unbinder = ButterKnife.bind(this, view);
         editText.setTextIsSelectable(true);
+        calculatorPresenter = new CalculatorPresenter(this);
         return view;
     }
 
@@ -59,17 +62,24 @@ public class BFragment extends Fragment {
 
     @OnClick(R.id.button_equal)
     void calc() {
-        Calculator calculator = new Calculator(editText.getText().toString());
-        editText.setText(calculator.calculate());
+        calculatorPresenter.calculate(editText.getText().toString());
     }
 
+    @Override
+    public void showCalculatedResult(String result) {
+        editText.setText(result);
+    }
+
+    @Override
     @OnClick(R.id.button_clear)
-    void clear() {
+    @OnLongClick(R.id.button_backspace)
+    public void clearInput() {
         editText.setText("");
     }
 
+    @Override
     @OnClick(R.id.button_backspace)
-    void backspace() {
+    public void backspace() {
         String expr = editText.getText().toString();
         if (editText.getText().toString().length() > 0)
             editText.setText(expr.substring(0, expr.length() - 1));

@@ -1,5 +1,6 @@
-package com.ysmstudio.bcsddrawer;
+package com.ysmstudio.bcsddrawer.calculator;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Stack;
 
@@ -107,7 +108,10 @@ public class Calculator {
             }
 
             if (stringStack.empty()) return errorMessage;
-            return stringStack.pop();
+
+            DecimalFormat decimalFormat = new DecimalFormat("#.#########");
+
+            return decimalFormat.format(Double.parseDouble(stringStack.pop()));
         } else return "ERROR";
     }
 
