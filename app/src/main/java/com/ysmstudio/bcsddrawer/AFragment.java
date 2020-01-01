@@ -16,27 +16,34 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class AFragment extends Fragment {
 
-    private EditText editText;
+    private Unbinder unbinder;
+
+    @BindView(R.id.edit_text_name) EditText editText;
+    @BindView(R.id.recycler_view_names) RecyclerView recyclerView;
+
     private NameRecyclerAdapter adapter = new NameRecyclerAdapter();
 
-    private View.OnClickListener buttonClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            if(editText.getText().toString().length() > 0) {
-                if(adapter != null) {
-                    adapter.addArrayListItem(editText.getText().toString());
-                    adapter.notifyDataSetChanged();
-                    editText.setText("");
-                }
+    @OnClick(R.id.button_add)
+    void buttonOnClick() {
+        if (editText.getText().toString().length() > 0) {
+            if (adapter != null) {
+                adapter.addArrayListItem(editText.getText().toString());
+                adapter.notifyDataSetChanged();
+                editText.setText("");
             }
         }
-    };
+    }
 
     public AFragment() {
         // Required empty public constructor
@@ -46,20 +53,16 @@ public class AFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_a, container, false);
-        init(view);
-        return view;
-    }
-
-    private void init(View view) {
-        editText = view.findViewById(R.id.edit_text_name);
-        Button button = view.findViewById(R.id.button_add);
-
-        button.setOnClickListener(buttonClickListener);
-
-        RecyclerView recyclerView = view.findViewById(R.id.recycler_view_names);
+        unbinder = ButterKnife.bind(this, view);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         recyclerView.setAdapter(adapter);
+        return view;
     }
 
+    @Override
+    public void onDestroy() {
+        unbinder.unbind();
+        super.onDestroy();
+    }
 }

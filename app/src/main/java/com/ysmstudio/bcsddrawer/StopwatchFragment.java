@@ -18,81 +18,70 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+import butterknife.OnClick;
+import butterknife.Unbinder;
+
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class StopwatchFragment extends Fragment implements View.OnClickListener {
+public class StopwatchFragment extends Fragment {
+
+    private Unbinder unbinder;
 
     private LinkedList<String> recordArrayList = new LinkedList<>();
     private ArrayAdapter<String> arrayAdapter;
-
-    private TextView textViewStopwatch;
-    private Button buttonStart, buttonStop, buttonPause, buttonRecord;
-
-    private ListView listViewRecords;
 
     private StopwatchTask stopwatchTask;
     private boolean isStopwatchRunning = false;
     private boolean executed = false;
 
+    @BindView(R.id.text_view_stopwatch) TextView textViewStopwatch;
+    @BindView(R.id.list_view_records) ListView listViewRecords;
+
     public StopwatchFragment() {
         // Required empty public constructor
     }
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_stopwatch, container, false);
-        init(view);
-        buttonStart.setOnClickListener(this);
-        buttonStop.setOnClickListener(this);
-        buttonPause.setOnClickListener(this);
-        buttonRecord.setOnClickListener(this);
+        unbinder = ButterKnife.bind(this, view);
+        stopwatchTask = new StopwatchTask();
 
         arrayAdapter = new ArrayAdapter<>(getActivity(), android.R.layout.simple_expandable_list_item_1, recordArrayList);
         listViewRecords.setAdapter(arrayAdapter);
         return view;
     }
 
-    private void init(View view) {
-        textViewStopwatch = view.findViewById(R.id.text_view_stopwatch);
-        buttonStart = view.findViewById(R.id.button_start);
-        buttonStop = view.findViewById(R.id.button_stop);
-        buttonPause = view.findViewById(R.id.button_pause);
-        buttonRecord = view.findViewById(R.id.button_record);
-        listViewRecords = view.findViewById(R.id.list_view_records);
-
-        stopwatchTask = new StopwatchTask();
+    @OnClick(R.id.button_start)
+    void start() {
+        isStopwatchRunning = true;
+        if (!executed) {
+            stopwatchTask = new StopwatchTask();
+            stopwatchTask.execute();
+            executed = true;
+        }
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.button_start:
-                isStopwatchRunning = true;
-                if (!executed) {
-                    stopwatchTask = new StopwatchTask();
-                    stopwatchTask.execute();
-                    executed = true;
-                }
-                break;
+    @OnClick(R.id.button_stop)
+    void stop() {
+        isStopwatchRunning = false;
+        executed = false;
+        stopwatchTask.cancel(true);
+    }
 
-            case R.id.button_stop:
-                isStopwatchRunning = false;
-                executed = false;
-                stopwatchTask.cancel(true);
-                break;
+    @OnClick(R.id.button_pause)
+    void pause() {
+        isStopwatchRunning = false;
+    }
 
-            case R.id.button_pause:
-                isStopwatchRunning = false;
-                break;
-
-            case R.id.button_record:
-                if(isStopwatchRunning && stopwatchTask != null) stopwatchTask.record();
-                break;
-        }
+    @OnClick(R.id.button_record)
+    void record() {
+        if(isStopwatchRunning && stopwatchTask != null) stopwatchTask.record();
     }
 
     private class StopwatchTask extends AsyncTask<Void, Long, Integer> {
@@ -105,7 +94,7 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
             startedTimelong = System.currentTimeMillis();
             while (true) {
                 try {
-                    Thread.sleep(10);
+                    Thread.sleep(1);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -150,8 +139,9 @@ public class StopwatchFragment extends Fragment implements View.OnClickListener 
 
     @Override
     public void onDestroy() {
-        super.onDestroy();
         stopwatchTask.cancel(true);
         executed = false;
+        unbinder.unbind();
+        super.onDestroy();
     }
 }

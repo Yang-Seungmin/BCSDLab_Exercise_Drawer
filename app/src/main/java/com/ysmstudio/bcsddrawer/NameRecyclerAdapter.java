@@ -11,6 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.ArrayList;
 import java.util.zip.Inflater;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class NameRecyclerAdapter extends RecyclerView.Adapter<NameRecyclerAdapter.ViewHolder> {
 
     private ArrayList<String> arrayList;
@@ -54,12 +57,11 @@ public class NameRecyclerAdapter extends RecyclerView.Adapter<NameRecyclerAdapte
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public TextView textView;
+        @BindView(R.id.item_text_view_name) TextView textView;
 
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            textView = itemView.findViewById(R.id.item_text_view_name);
-
+            ButterKnife.bind(this, itemView);
         }
     }
 }
